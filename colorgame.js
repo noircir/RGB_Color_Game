@@ -21,12 +21,6 @@ var h1 = document.querySelector("h1");
 //"Play again?" button
 var resetButton = document.querySelector("#reset");
 
-//selector of easy game
-var easyBtn = document.querySelector("#easyBtn");
-
-//selector of hard game
-var hardBtn = document.querySelector("#hardBtn");
-
 //two "Easy" and "Hard" buttons
 var modeButtons = document.querySelectorAll(".mode");
 
@@ -38,13 +32,14 @@ init();
 
 function init() {
 
-	//Draw the game.
-
+	setUpModeButtons();
+	setUpSquares();
+	setUpResetButton();
 	reset();
+}
 
-	//Add event listeners to Mode buttons.
-	//When clicked, Mode buttons reset the game.
 
+function setUpModeButtons() {
 	for (var i=0; i<modeButtons.length; i++) {
 		modeButtons[i].addEventListener("click", function() {
 			modeButtons[0].classList.remove("selected");
@@ -57,13 +52,18 @@ function init() {
 		});
 	}
 
-	for (var i=0; i < squares.length; i++) {
+}
 
-		// Add event listeners to squares.
-		// They will compare the clicked color to the picked color.
-		// If identical, then all squares and the h1 background
-		// are painted in the picked color.
-		// A suggestion "Play Again?" appears.
+function setUpSquares() {
+
+	// Add event listeners to squares.
+	// They will compare the clicked color to the picked color.
+	// If not identical, the square disappears.
+	// If identical, then all squares and the h1 background
+	// are painted with the picked color.
+	// A suggestion "Play Again?" appears.
+
+	for (var i=0; i < squares.length; i++) {
 
 		squares[i].addEventListener("click", function() {
 			
@@ -83,7 +83,9 @@ function init() {
 			}
 		});
 	}
+}
 
+function setUpResetButton() {
 	// Add event listener to Play Again button.
 
 	resetButton.addEventListener("click", function() {
@@ -92,10 +94,31 @@ function init() {
 
 }
 
+function reset() {
+	colors = generateRandomColors(numSquares);
+	pickedColor = pickColor();
+	colorDisplay.textContent = pickedColor;
+	h1.style.backgroundColor = "steelblue";
+	messageDisplay.textContent = "";
+	resetButton.textContent = "New Colors";
+	for (var i=0; i < squares.length; i++) {
+		if (colors[i]) {
+			squares[i].style.display = "block";
+		 	squares[i].style.backgroundColor = colors[i];
+		 } else {
+			//when the array of colors ends, (and there are 
+			//only 3 colors), the color[3], color[4] and color[5])
+			//become "false". Brilliant!
+			squares[i].style.display = "none";
+		}
+	}
+}
+
 
 //------------------------------------------------------
-// Functions
+// Color functions
 //------------------------------------------------------
+
 
 function changeColors(color) {
 	//loop through all the squares
@@ -126,24 +149,4 @@ function randomColor() {
 	var b = Math.floor(Math.random()*256);
 
 	return ("rgb(" + r + ", " + g + ", " + b + ")");
-}
-
-function reset() {
-	colors = generateRandomColors(numSquares);
-	pickedColor = pickColor();
-	colorDisplay.textContent = pickedColor;
-	h1.style.backgroundColor = "steelblue";
-	messageDisplay.textContent = "";
-	resetButton.textContent = "New Colors";
-	for (var i=0; i < squares.length; i++) {
-		if (colors[i]) {
-			squares[i].style.display = "block";
-		 	squares[i].style.backgroundColor = colors[i];
-		 } else {
-			//when the array of colors ends, (and there are 
-			//only 3 colors), the color[3], color[4] and color[5])
-			//become "false". Brilliant!
-			squares[i].style.display = "none";
-		}
-	}
 }
